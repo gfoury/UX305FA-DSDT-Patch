@@ -11,4 +11,6 @@ git submodule update
 
 to download those modules.
 
-The patch is based on the ACPI files from your machine. To generate the files, press `F4` within Clover. This will dump a bunch of files in `YOURDISK/EFI/CLOVER/ACPI/origin/`. Copy those files into `native_clover/origin/` in this directory.
+The patch is based on the ACPI files from your machine. To generate the files, press `F4` within Clover. This will dump a bunch of files in `YOURDISK/EFI/CLOVER/ACPI/origin/`. Copy those files into `native_clover/origin/` in this directory. After copying, run the command `sh disassemble.sh` to generate the .dsl files to patch.
+
+Most of the SSDTs do not need to be modified. Unmodified SSDTs are copied without disassembly/reassembly.
