@@ -1,0 +1,21 @@
+diff --git a/config_HD5300_5500_5600_6000.plist b/config_HD5300_5500_5600_6000.plist
+index c3a3062..1b919c8 100644
+--- a/config_HD5300_5500_5600_6000.plist
++++ b/config_HD5300_5500_5600_6000.plist
+@@ -8,6 +8,7 @@
+ 		<string>This is the original order supported by Clover prior to build v3062.  You can trim it as necessary.</string>
+ 		<key>SortedOrder</key>
+ 		<array>
++			<string>SSDT-RMNE.aml</string>
+ 			<string>SSDT.aml</string>
+ 			<string>SSDT-0.aml</string>
+ 			<string>SSDT-1.aml</string>
+@@ -87,7 +88,7 @@
+ 		<key>SSDT</key>
+ 		<dict>
+ 			<key>DropOem</key>
+-			<false/>
++			<true/>
+ 			<key>Generate</key>
+ 			<dict>
+ 				<key>CStates</key>
