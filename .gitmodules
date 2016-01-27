@@ -1,0 +1,6 @@
+[submodule "clover-laptop-config"]
+	path = clover-laptop-config
+	url = https://github.com/RehabMan/OS-X-Clover-Laptop-Config.git
+[submodule "laptop-dsdt-patch"]
+	path = laptop-dsdt-patch
+	url = https://github.com/RehabMan/Laptop-DSDT-Patch.git
