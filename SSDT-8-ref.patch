@@ -1,0 +1,33 @@
+--- SSDT-8.dsl~	2016-01-24 11:33:29.000000000 -0500
++++ SSDT-8.dsl	2016-01-24 13:23:02.000000000 -0500
+@@ -20,15 +20,6 @@
+  */
+ DefinitionBlock ("SSDT-8.aml", "SSDT", 2, "DptfTa", "DptfTabl", 0x00001000)
+ {
+-
+-    /*
+-     * External declarations that were imported from
+-     * the reference file [../refs.txt]
+-     */
+-    External (_SB_.PCI0.LPCB.H_EC.ECRD, MethodObj)    // 1 Arguments
+-    External (_SB_.PCI0.LPCB.H_EC.ECWT, MethodObj)    // 2 Arguments
+-    External (_SB_.PCI0.PEG0.PEGP.SGPO, MethodObj)    // 2 Arguments
+-
+     External (_PR_.AAC0, FieldUnitObj)
+     External (_PR_.ACRT, FieldUnitObj)
+     External (_PR_.APSV, FieldUnitObj)
+@@ -146,6 +137,14 @@
+     External (WWHT, FieldUnitObj)
+     External (WWPT, FieldUnitObj)
+ 
++    /*
++     * External declarations that were imported from
++     * the reference file [../refs.txt]
++     */
++    External (_SB_.PCI0.LPCB.H_EC.ECRD, MethodObj)    // 1 Arguments
++    External (_SB_.PCI0.LPCB.H_EC.ECWT, MethodObj)    // 2 Arguments
++    External (_SB_.PCI0.PEG0.PEGP.SGPO, MethodObj)    // 2 Arguments
++    
+     Scope (\_SB)
+     {
+         Device (IETM)

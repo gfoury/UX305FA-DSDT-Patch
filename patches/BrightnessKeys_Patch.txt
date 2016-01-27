@@ -1,0 +1,20 @@
+# Patch by EMlyDinEsH (OSXLatitude)
+# Patches for getting Asus Fn brightness keys to work with my driver AsusNBFnKeys
+
+# Replacing method _Q0E for Brightness F5 key to work
+# by removing the code which prevents
+into Method label _Q0E replace_content begin 
+             If (ATKP)\n
+                {\n
+                   ^^^^ATKD.IANE (0x20)\n
+                }
+end;
+
+# Replacing method _Q0F for Brightness F6 key to work
+# by removing the code which prevents 
+into Method label _Q0F replace_content begin 
+             If (ATKP)\n
+                {\n
+                   ^^^^ATKD.IANE (0x10)\n
+                }
+end;
