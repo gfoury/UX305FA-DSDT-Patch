@@ -1,0 +1,1 @@
+# UX305FA-DSDT-Patch
