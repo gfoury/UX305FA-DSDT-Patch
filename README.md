@@ -13,13 +13,13 @@ git submodule update
 
 to download those modules. 
 
-The command `sh download.sh` will download a collection of drivers into `downloads/`. If you don't have `iasl` and `patchmatic` on your path, unzip them from `downloads/tools/`.
+The command `sh download.sh` will download a collection of drivers into `downloads/`. If you don't have `iasl` and `patchmatic` on your PATH, unzip them from `downloads/tools/` into `tools/`, which is on the PATH for the Makefile.
 
 ## Patching
 
-Patching does not need to be run on an UX305FA.
+Patching does not need to be run on an UX305FA, but you do need the ACPI files from your UX305FA.
 
-The patch is based on the ACPI files from your machine. To generate the files, boot Clover from a USB drive, and press `F4`. This will dump a bunch of files in `YOURDISK/EFI/CLOVER/ACPI/origin/`. Copy those files into `native_clover/origin/` in this directory. After copying, run the command `sh disassemble.sh` to generate the .dsl files to patch.
+To generate your ACPI files, boot your UX305FA with Clover from a USB drive, and press `F4`. This will dump a bunch of files in `YOURDISK/EFI/CLOVER/ACPI/origin/`. Copy those files into `native_clover/origin/` in this repository's directory. After copying, run the command `sh disassemble.sh` to generate the .dsl files to patch.
 
 Most of the SSDTs do not need to be modified. Unmodified SSDTs are copied without disassembly/reassembly.
 
@@ -40,7 +40,7 @@ Make sure that your Clover plist has `DropOem` set. The file `build/config.plist
 On the destination machine, you can run `install_downloads.sh` to set up kexts. This installs:
 
 * ACPIBatteryManager
-* ApplePS2SmartTouchPad v4.4 (later versions buggy)
+* ApplePS2SmartTouchPad v4.4 (4.5 doesn't work as well on UX305FA)
 * AsusNBFnKeys v2.4 (matches v4.4)
 * BrcmPatchRAM2 and BrcmFirmwareRepo
 * FakePCIID
@@ -49,7 +49,7 @@ On the destination machine, you can run `install_downloads.sh` to set up kexts. 
 * IntelBacklight
 * NullEthernet
 
-NullEthernet is only loaded if you edited the Makefile and `SSDT-RHME.dsl`.
+NullEthernet is only loaded if you edited the Makefile and `SSDT-RMNE.dsl`.
 
 In this directory is `AX88772-USB-Ethernet.dmg`, which is a driver for the USB Ethernet dongle which comes with the UX305FA. (It appears to replace the Apple USB Ethernet driver, but it does come with an uninstall script.)
 
