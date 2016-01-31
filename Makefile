@@ -181,39 +181,41 @@ update_kernelcache:
 .PHONY: patch
 patch: $(ALL_PATCHED)
 
+PATCHTITLE=@./patchtitle
+
 $(PATCHED)/$(DSDT).dsl: $(UNPATCHED)/$(DSDT).dsl
 	cp $(UNPATCHED)/$(DSDT).dsl $(PATCHED)
-	patchmatic $@ patches/syntax.txt
-	patchmatic $@ $(LAPTOPGIT)/syntax/remove_DSM.txt
-	patchmatic $@ patches/misc-UX303-LPC.txt
-	patchmatic $@ patches/DTGP.txt
-	patchmatic $@ $(LAPTOPGIT)/system/system_SMBUS.txt
+	$(PATCHTITLE) $@ patches syntax.txt
+	$(PATCHTITLE) $@ $(LAPTOPGIT) syntax/remove_DSM.txt
+	$(PATCHTITLE) $@ patches misc-UX303-LPC.txt
+	$(PATCHTITLE) $@ patches DTGP.txt
+	$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_SMBUS.txt
 	# not doing audio layout 12
-	patchmatic $@ $(LAPTOPGIT)/battery/battery_ASUS-N55SL.txt
-	patchmatic $@ $(LAPTOPGIT)/system/system_WAK2.txt
-	patchmatic $@ $(LAPTOPGIT)/system/system_HPET.txt
-	patchmatic $@ $(LAPTOPGIT)/system/system_IRQ.txt
-	patchmatic $@ $(LAPTOPGIT)/system/system_RTC.txt
-	patchmatic $@ $(LAPTOPGIT)/system/system_PNOT.txt
-	patchmatic $@ $(LAPTOPGIT)/system/system_IMEI.txt
+	$(PATCHTITLE) $@ $(LAPTOPGIT) battery/battery_ASUS-N55SL.txt
+	$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_WAK2.txt
+	$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_HPET.txt
+	$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_IRQ.txt
+	$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_RTC.txt
+	$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_PNOT.txt
+	$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_IMEI.txt
 	# already fixed ADGB
-	patchmatic $@ $(LAPTOPGIT)/usb/usb_prw_0x0d_xhc.txt
-	patchmatic $@ patches/graphics_PNLF_haswell.txt
-	patchmatic $@ patches/ZenBooksLidSleepandScreenBackLightPatch.txt
-	patchmatic $@ patches/ALSPatch-Haswell.txt
-	patchmatic $@ patches/KeyboardBacklight.txt
-	patchmatic $@ patches/BrightnessKeys_Patch.txt
-	patchmatic $@ $(LAPTOPGIT)/graphics/graphics_Rename-GFX0.txt
+	$(PATCHTITLE) $@ $(LAPTOPGIT) usb/usb_prw_0x6d_xhc.txt
+	$(PATCHTITLE) $@ patches graphics_PNLF_haswell.txt
+	$(PATCHTITLE) $@ patches ZenBooksLidSleepandScreenBackLightPatch.txt
+	$(PATCHTITLE) $@ patches ALSPatch-Haswell.txt
+	$(PATCHTITLE) $@ patches KeyboardBacklight.txt
+	$(PATCHTITLE) $@ patches BrightnessKeys_Patch.txt
+	$(PATCHTITLE) $@ $(LAPTOPGIT) graphics/graphics_Rename-GFX0.txt
 
 $(PATCHED)/$(IGPU).dsl: $(UNPATCHED)/$(IGPU).dsl 
 	cp $(UNPATCHED)/$(IGPU).dsl $(PATCHED)
 	cd $(PATCHED) && patch -p0 <../SSDT-11-ref.patch
-	patchmatic $@ $(LAPTOPGIT)/graphics/graphics_Rename-GFX0.txt
+	$(PATCHTITLE) $@ $(LAPTOPGIT) graphics/graphics_Rename-GFX0.txt
 
 $(PATCHED)/$(DPTF).dsl: $(UNPATCHED)/$(DPTF).dsl 
 	cp $(UNPATCHED)/$(DPTF).dsl $(PATCHED)
 	cd $(PATCHED) && patch -p0 <../SSDT-8-ref.patch
-	patchmatic $@ $(LAPTOPGIT)/graphics/graphics_Rename-GFX0.txt
+	$(PATCHTITLE) $@ $(LAPTOPGIT) graphics/graphics_Rename-GFX0.txt
 
 
 $(UNTOUCHED_IN_BUILDDIR): $(BUILDDIR)/%: $(NATIVE_ORIGIN)/%
