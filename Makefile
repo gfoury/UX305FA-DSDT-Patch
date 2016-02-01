@@ -190,7 +190,8 @@ $(PATCHED)/$(DSDT).dsl: $(UNPATCHED)/$(DSDT).dsl
 	$(PATCHTITLE) $@ patches misc-UX303-LPC.txt
 	$(PATCHTITLE) $@ patches DTGP.txt
 	$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_SMBUS.txt
-	# not doing audio layout 12
+	# Does not seem to hurt, might help some:
+	$(PATCHTITLE) $@ $(LAPTOPGIT) audio/audio_HDEF-layout3.txt
 	$(PATCHTITLE) $@ $(LAPTOPGIT) battery/battery_ASUS-N55SL.txt
 	$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_WAK2.txt
 	$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_HPET.txt
