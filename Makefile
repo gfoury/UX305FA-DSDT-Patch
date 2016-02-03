@@ -189,14 +189,14 @@ $(PATCHED)/$(DSDT).dsl: $(UNPATCHED)/$(DSDT).dsl
 	$(PATCHTITLE) $@ $(LAPTOPGIT) syntax/remove_DSM.txt
 	$(PATCHTITLE) $@ patches misc-UX303-LPC.txt
 	# This is probably *not* AddDTGP_0001. Examine more.
-	$(PATCHTITLE) $@ patches DTGP.txt
+	# $(PATCHTITLE) $@ patches DTGP.txt
 	# probably FixSBUS_0080
-	$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_SMBUS.txt
+	# $(PATCHTITLE) $@ $(LAPTOPGIT) system/system_SMBUS.txt
 	# Does not seem to hurt, might help some:
 	$(PATCHTITLE) $@ $(LAPTOPGIT) audio/audio_HDEF-layout3.txt
 	$(PATCHTITLE) $@ $(LAPTOPGIT) battery/battery_ASUS-N55SL.txt
 	# This would be FIX_WAK_200000 but is allegedly not necessary for >10.10.2, possibly 10.10.*
-	$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_WAK2.txt
+	#$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_WAK2.txt
 	# This appears to be FixHPET_0010
 	#$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_HPET.txt
 	# this appears to be FixIPIC_0040

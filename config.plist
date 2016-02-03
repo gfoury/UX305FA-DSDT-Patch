@@ -47,6 +47,10 @@
 				<true/>
 				<key>FIX_RTC_20000</key>
 				<true/>
+				<key>AddDTGP_0001</key>
+				<true/>
+				<key>FixSBUS_0080</key>
+				<true/>
 			</dict>
 			<key>Patches</key>
 			<array>
