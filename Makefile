@@ -187,7 +187,7 @@ $(PATCHED)/$(DSDT).dsl: $(UNPATCHED)/$(DSDT).dsl
 	cp $(UNPATCHED)/$(DSDT).dsl $(PATCHED)
 	$(PATCHTITLE) $@ patches syntax.txt
 	$(PATCHTITLE) $@ $(LAPTOPGIT) syntax/remove_DSM.txt
-	$(PATCHTITLE) $@ patches misc-UX303-LPC.txt
+	# $(PATCHTITLE) $@ patches misc-UX303-LPC.txt
 	# This is probably *not* AddDTGP_0001. Examine more.
 	# $(PATCHTITLE) $@ patches DTGP.txt
 	# probably FixSBUS_0080
