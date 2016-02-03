@@ -39,6 +39,14 @@
 				<true/>
 				<key>NewWay_80000000</key>
 				<true/>
+				<key>FixHPET_0010</key>
+				<true/>
+				<key>AddIMEI_80000</key>
+				<true/>
+				<key>FixIPIC_0040</key>
+				<true/>
+				<key>FIX_RTC_20000</key>
+				<true/>
 			</dict>
 			<key>Patches</key>
 			<array>

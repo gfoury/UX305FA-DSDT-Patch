@@ -118,8 +118,8 @@ cleanallex:
 	rm -f native_patchmatic/*.aml
 
 # Clover Install
-.PHONY: install
-install: $(PRODUCTS)
+.PHONY: do-not-use-install
+do-not-use-install: $(PRODUCTS)
 	$(error You do not want to run this)
 	$(eval EFIDIR:=$(shell sudo ./mount_efi.sh /))
 	cp $(BUILDDIR)/$(DSDT).aml $(EFIDIR)/EFI/CLOVER/ACPI/patched
@@ -198,15 +198,15 @@ $(PATCHED)/$(DSDT).dsl: $(UNPATCHED)/$(DSDT).dsl
 	# This would be FIX_WAK_200000 but is allegedly not necessary for >10.10.2, possibly 10.10.*
 	$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_WAK2.txt
 	# This appears to be FixHPET_0010
-	$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_HPET.txt
+	#$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_HPET.txt
 	# this appears to be FixIPIC_0040
-	$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_IRQ.txt
+	#$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_IRQ.txt
 	# this appears to be FIX_RTC_20000
-	$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_RTC.txt
+	#$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_RTC.txt
 	# no equivalent
 	$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_PNOT.txt
 	# probably AddIMEI_80000
-	$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_IMEI.txt
+	#$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_IMEI.txt
 	# already fixed ADGB
 	$(PATCHTITLE) $@ $(LAPTOPGIT) usb/usb_prw_0x6d_xhc.txt
 	$(PATCHTITLE) $@ patches graphics_PNLF_haswell.txt
@@ -237,10 +237,11 @@ INSTDIR=/Volumes/EFI/EFI/CLOVER
 INSTDISK=/dev/disk1s1
 .PHONY: install2
 install2:
-	[ -d /Volumes/EFI ] && diskutil unmount /Volumes/EFI
+	[ ! -d /Volumes/EFI ] || diskutil unmount /Volumes/EFI
 	diskutil mount $(INSTDISK)
 	cp config-full.plist $(INSTDIR)/config.plist
 	cp build/DSDT.aml $(INSTDIR)/ACPI/patched
+	sync; sync; sleep 2
 	diskutil eject $(INSTDISK)
 
 
