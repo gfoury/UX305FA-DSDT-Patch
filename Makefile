@@ -193,10 +193,15 @@ $(PATCHED)/$(DSDT).dsl: $(UNPATCHED)/$(DSDT).dsl
 	# Does not seem to hurt, might help some:
 	$(PATCHTITLE) $@ $(LAPTOPGIT) audio/audio_HDEF-layout3.txt
 	$(PATCHTITLE) $@ $(LAPTOPGIT) battery/battery_ASUS-N55SL.txt
+	# This would be FIX_WAK(?) but is allegedly not necessary for >10.10.2, possibly 10.10.*
 	$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_WAK2.txt
+	# This appears to be FixHPET_0010
 	$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_HPET.txt
+	# this appears to be FixIPIC_0040
 	$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_IRQ.txt
+	# this appears to be FIX_RTC_20000
 	$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_RTC.txt
+	# no equivalent
 	$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_PNOT.txt
 	$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_IMEI.txt
 	# already fixed ADGB
@@ -206,18 +211,24 @@ $(PATCHED)/$(DSDT).dsl: $(UNPATCHED)/$(DSDT).dsl
 	$(PATCHTITLE) $@ patches ALSPatch-Haswell.txt
 	$(PATCHTITLE) $@ patches KeyboardBacklight.txt
 	$(PATCHTITLE) $@ patches BrightnessKeys_Patch.txt
-	$(PATCHTITLE) $@ $(LAPTOPGIT) graphics/graphics_Rename-GFX0.txt
+	#$(PATCHTITLE) $@ $(LAPTOPGIT) graphics/graphics_Rename-GFX0.txt
 
 $(PATCHED)/$(IGPU).dsl: $(UNPATCHED)/$(IGPU).dsl 
 	cp $(UNPATCHED)/$(IGPU).dsl $(PATCHED)
 	cd $(PATCHED) && patch -p0 <../SSDT-11-ref.patch
-	$(PATCHTITLE) $@ $(LAPTOPGIT) graphics/graphics_Rename-GFX0.txt
+	# $(PATCHTITLE) $@ $(LAPTOPGIT) graphics/graphics_Rename-GFX0.txt
 
 $(PATCHED)/$(DPTF).dsl: $(UNPATCHED)/$(DPTF).dsl 
 	cp $(UNPATCHED)/$(DPTF).dsl $(PATCHED)
 	cd $(PATCHED) && patch -p0 <../SSDT-8-ref.patch
-	$(PATCHTITLE) $@ $(LAPTOPGIT) graphics/graphics_Rename-GFX0.txt
+	# $(PATCHTITLE) $@ $(LAPTOPGIT) graphics/graphics_Rename-GFX0.txt
 
+.PHONY: build2
+build2:
+	rm -f build2/*.dsl build2/*.aml
+	cp native_clover/origin/SSDT-[0-9].aml native_clover/origin/SSDT-[0-9][0-9].aml native_clover/origin/DSDT.aml build2
+	../cloverbinpatch/cloverbinpatch.py -v build2/*.aml
+	#cd build2 && iasl -da -dl -fe ../refs.txt *.aml
 
 $(UNTOUCHED_IN_BUILDDIR): $(BUILDDIR)/%: $(NATIVE_ORIGIN)/%
 	cp $< $@
