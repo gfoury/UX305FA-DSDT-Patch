@@ -188,12 +188,14 @@ $(PATCHED)/$(DSDT).dsl: $(UNPATCHED)/$(DSDT).dsl
 	$(PATCHTITLE) $@ patches syntax.txt
 	$(PATCHTITLE) $@ $(LAPTOPGIT) syntax/remove_DSM.txt
 	$(PATCHTITLE) $@ patches misc-UX303-LPC.txt
+	# This is probably *not* AddDTGP_0001. Examine more.
 	$(PATCHTITLE) $@ patches DTGP.txt
+	# probably FixSBUS_0080
 	$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_SMBUS.txt
 	# Does not seem to hurt, might help some:
 	$(PATCHTITLE) $@ $(LAPTOPGIT) audio/audio_HDEF-layout3.txt
 	$(PATCHTITLE) $@ $(LAPTOPGIT) battery/battery_ASUS-N55SL.txt
-	# This would be FIX_WAK(?) but is allegedly not necessary for >10.10.2, possibly 10.10.*
+	# This would be FIX_WAK_200000 but is allegedly not necessary for >10.10.2, possibly 10.10.*
 	$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_WAK2.txt
 	# This appears to be FixHPET_0010
 	$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_HPET.txt
@@ -203,6 +205,7 @@ $(PATCHED)/$(DSDT).dsl: $(UNPATCHED)/$(DSDT).dsl
 	$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_RTC.txt
 	# no equivalent
 	$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_PNOT.txt
+	# probably AddIMEI_80000
 	$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_IMEI.txt
 	# already fixed ADGB
 	$(PATCHTITLE) $@ $(LAPTOPGIT) usb/usb_prw_0x6d_xhc.txt
@@ -228,7 +231,18 @@ build2:
 	rm -f build2/*.dsl build2/*.aml
 	cp native_clover/origin/SSDT-[0-9].aml native_clover/origin/SSDT-[0-9][0-9].aml native_clover/origin/DSDT.aml build2
 	../cloverbinpatch/cloverbinpatch.py -v build2/*.aml
-	#cd build2 && iasl -da -dl -fe ../refs.txt *.aml
+	cd build2 && iasl -da -dl -fe ../refs.txt *.aml
+
+INSTDIR=/Volumes/EFI/EFI/CLOVER
+INSTDISK=/dev/disk1s1
+.PHONY: install2
+install2:
+	[ -d /Volumes/EFI ] && diskutil unmount /Volumes/EFI
+	diskutil mount $(INSTDISK)
+	cp config-full.plist $(INSTDIR)/config.plist
+	cp build/DSDT.aml $(INSTDIR)/ACPI/patched
+	diskutil eject $(INSTDISK)
+
 
 $(UNTOUCHED_IN_BUILDDIR): $(BUILDDIR)/%: $(NATIVE_ORIGIN)/%
 	cp $< $@
