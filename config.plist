@@ -51,6 +51,8 @@
 				<true/>
 				<key>FixSBUS_0080</key>
 				<true/>
+				<key>AddPNLF_1000000</key>
+				<true/>
 			</dict>
 			<key>Patches</key>
 			<array>

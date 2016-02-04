@@ -203,13 +203,14 @@ $(PATCHED)/$(DSDT).dsl: $(UNPATCHED)/$(DSDT).dsl
 	#$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_IRQ.txt
 	# this appears to be FIX_RTC_20000
 	#$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_RTC.txt
-	# no equivalent
-	$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_PNOT.txt
+	# no equivalent, patch makes no changes anyway
+	# $(PATCHTITLE) $@ $(LAPTOPGIT) system/system_PNOT.txt
 	# probably AddIMEI_80000
 	#$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_IMEI.txt
 	# already fixed ADGB
 	$(PATCHTITLE) $@ $(LAPTOPGIT) usb/usb_prw_0x6d_xhc.txt
-	$(PATCHTITLE) $@ patches graphics_PNLF_haswell.txt
+	# For IntelBacklight.kext, AddPNLF_1000000 is good enough.
+	# $(PATCHTITLE) $@ patches graphics_PNLF_haswell.txt
 	$(PATCHTITLE) $@ patches ZenBooksLidSleepandScreenBackLightPatch.txt
 	$(PATCHTITLE) $@ patches ALSPatch-Haswell.txt
 	$(PATCHTITLE) $@ patches KeyboardBacklight.txt
