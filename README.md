@@ -2,6 +2,8 @@
 
 This is a collection of DSDT/SSDT patches and tools for the ASUS UX305FA laptop.
 
+It requires Clover r3328 or later.
+
 ## Downloading
 
 This repository depends on two of RehabMan's repositories as git submodules. After you've cloned this repository, run
@@ -21,7 +23,7 @@ Patching does not need to be run on an UX305FA, but you do need the ACPI files f
 
 To generate your ACPI files, boot your UX305FA with Clover from a USB drive, and press `F4`. This will dump a bunch of files in `YOURDISK/EFI/CLOVER/ACPI/origin/`. Copy those files into `native_clover/origin/` in this repository's directory. After copying, run the command `sh disassemble.sh` to generate the .dsl files to patch.
 
-Most of the SSDTs do not need to be modified. Unmodified SSDTs are copied without disassembly/reassembly.
+Only the DSDT needs to be patched. The SSDT files are decompiled for reference.
 
 The factory WiFi card does not have a driver. If you have not replaced the card, edit the `Makefile` and uncomment the NullEthernet line; then edit SSDT-RMNE.dsl to include a MAC address not currently in use. (The MAC address of the factory WiFi card is a reasonable choice.)
 
@@ -33,7 +35,7 @@ Copy `UX305FA-DSDT-Patch` to the destination machine.
 
 Copy `build/*.aml` to the `EFI/CLOVER/ACPI/patched` directory.
 
-Make sure that your Clover plist has `DropOem` set. The file `build/config.plist` is suitable to copy to `EFI/CLOVER/config.plist`.
+You need a Clover `config.plist` that matches these patches in the ACPI/DSDT/Fixes section, and *without* `DropOem`. Copy `build/config.plist` to `EFI/CLOVER/config.plist`.
 
 ## Installing drivers and tools
 

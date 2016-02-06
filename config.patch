@@ -1,7 +1,5 @@
-diff --git a/config_HD5300_5500_5600_6000.plist b/config_HD5300_5500_5600_6000.plist
-index c3a3062..1b919c8 100644
---- a/config_HD5300_5500_5600_6000.plist
-+++ b/config_HD5300_5500_5600_6000.plist
+--- clover-laptop-config/config_HD5300_5500_5600_6000.plist	2016-01-27 12:45:36.000000000 -0500
++++ config.plist	2016-02-06 09:50:11.000000000 -0500
 @@ -8,6 +8,7 @@
  		<string>This is the original order supported by Clover prior to build v3062.  You can trim it as necessary.</string>
  		<key>SortedOrder</key>
@@ -10,12 +8,49 @@ index c3a3062..1b919c8 100644
  			<string>SSDT.aml</string>
  			<string>SSDT-0.aml</string>
  			<string>SSDT-1.aml</string>
-@@ -87,7 +88,7 @@
- 		<key>SSDT</key>
- 		<dict>
- 			<key>DropOem</key>
--			<false/>
-+			<true/>
- 			<key>Generate</key>
- 			<dict>
- 				<key>CStates</key>
+@@ -38,7 +39,36 @@
+ 				<true/>
+ 				<key>NewWay_80000000</key>
+ 				<true/>
++				<key>FixHPET_0010</key>
++				<true/>
++				<key>AddIMEI_80000</key>
++				<true/>
++				<key>FixIPIC_0040</key>
++				<true/>
++				<key>FIX_RTC_20000</key>
++				<true/>
++				<key>AddDTGP_0001</key>
++				<true/>
++				<key>FixSBUS_0080</key>
++				<true/>
++				<key>AddPNLF_1000000</key>
++				<true/>
+ 			</dict>
++			<key>Patches</key>
++			<array>
++			        <dict>
++					<key>Comment</key>
++					<string>change GFX0 to IGPU</string>
++					<key>Find</key>
++					<data>
++					R0ZYMA==
++					</data>
++					<key>Replace</key>
++					<data>
++					SUdQVQ==
++					</data>
++				</dict>
++			</array>
+ 		</dict>
+ 		<key>DropTables</key>
+ 		<array>
+@@ -244,7 +274,7 @@
+ 				<key>Comment</key>
+ 				<string>Boot graphics glitch, 10.10.x/10.11.x (credit lisai9093, cecekpawon)</string>
+ 				<key>Disabled</key>
+-				<true/>
++				<false/>
+ 				<key>Find</key>
+ 				<data>AQAAdRc=</data>
+ 				<key>Name</key>
