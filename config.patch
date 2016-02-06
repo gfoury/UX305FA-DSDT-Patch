@@ -1,14 +1,16 @@
 --- clover-laptop-config/config_HD5300_5500_5600_6000.plist	2016-01-27 12:45:36.000000000 -0500
-+++ config.plist	2016-02-06 17:01:08.000000000 -0500
-@@ -8,6 +8,7 @@
++++ build/config.plist	2016-02-06 17:12:11.000000000 -0500
+@@ -8,6 +8,9 @@
  		<string>This is the original order supported by Clover prior to build v3062.  You can trim it as necessary.</string>
  		<key>SortedOrder</key>
  		<array>
 +			<string>SSDT-RMNE.aml</string>
++			<string>SSDT-HACK.aml</string>
++			<string>SSDT-DEBUG.aml</string>
  			<string>SSDT.aml</string>
  			<string>SSDT-0.aml</string>
  			<string>SSDT-1.aml</string>
-@@ -38,7 +39,72 @@
+@@ -38,7 +41,80 @@
  				<true/>
  				<key>NewWay_80000000</key>
  				<true/>
@@ -40,6 +42,14 @@
 +					<data>
 +					SUdQVQ==
 +					</data>
++				</dict>
++				<dict>
++					<key>Comment</key>
++					<string>change B0D3 to HDAU</string>
++					<key>Find</key>
++					<data>QjBEMw==</data>
++					<key>Replace</key>
++					<data>SERBVQ==</data>
 +				</dict>
 +				<dict>
 +					<key>Comment</key>
@@ -81,7 +91,7 @@
  		</dict>
  		<key>DropTables</key>
  		<array>
-@@ -244,7 +310,7 @@
+@@ -244,7 +320,7 @@
  				<key>Comment</key>
  				<string>Boot graphics glitch, 10.10.x/10.11.x (credit lisai9093, cecekpawon)</string>
  				<key>Disabled</key>

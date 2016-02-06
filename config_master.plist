@@ -8,8 +8,9 @@
 		<string>This is the original order supported by Clover prior to build v3062.  You can trim it as necessary.</string>
 		<key>SortedOrder</key>
 		<array>
-		        <string>SSDT-RMNE.aml</string>
+			<string>SSDT-RMNE.aml</string>
 			<string>SSDT-HACK.aml</string>
+			<string>SSDT-DEBUG.aml</string>
 			<string>SSDT.aml</string>
 			<string>SSDT-0.aml</string>
 			<string>SSDT-1.aml</string>
@@ -99,6 +100,18 @@
 					<key>Replace</key>
 					<data>
 					WFEwRgA=
+					</data>
+				</dict>
+				<dict>
+					<key>Comment</key>
+					<string>Rename Method(_QCD,0) to XQCD</string>
+					<key>Find</key>
+					<data>
+					X1FDRAA=
+					</data>
+					<key>Replace</key>
+					<data>
+					WFFDRAA=
 					</data>
 				</dict>
 			</array>
@@ -295,7 +308,7 @@
 				<key>Comment</key>
 				<string>Enable TRIM for SSD</string>
 				<key>Disabled</key>
-				<false/>
+				<true/>
 				<key>Name</key>
 				<string>IOAHCIBlockStorage</string>
 				<key>Find</key>
