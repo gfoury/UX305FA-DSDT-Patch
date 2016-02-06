@@ -163,9 +163,12 @@ $(PATCHED)/$(DSDT).dsl: $(UNPATCHED)/$(DSDT).dsl
 	@# For IntelBacklight.kext, AddPNLF_1000000 is good enough.
 	@# $(PATCHTITLE) $@ patches graphics_PNLF_haswell.txt
 	$(PATCHTITLE) $@ patches ZenBooksLidSleepandScreenBackLightPatch.txt
-	$(PATCHTITLE) $@ patches ALSPatch-Haswell.txt
-	$(PATCHTITLE) $@ patches KeyboardBacklight.txt
-	$(PATCHTITLE) $@ patches BrightnessKeys_Patch.txt
+	@# This is now done through SSDT-ALS and Clover
+	@#$(PATCHTITLE) $@ patches ALSPatch-Haswell.txt
+	# Try without EMlyDinEsH's patch
+	#$(PATCHTITLE) $@ patches KeyboardBacklight.txt
+	@# This is in SSDT-HACK now.
+	@#$(PATCHTITLE) $@ patches BrightnessKeys_Patch.txt
 	@# This is done through DSDT patching in Clover
 	@#$(PATCHTITLE) $@ $(LAPTOPGIT) graphics/graphics_Rename-GFX0.txt
 
@@ -193,7 +196,7 @@ install2:
 	[ ! -d /Volumes/EFI ] || diskutil unmount /Volumes/EFI
 	diskutil mount $(INSTDISK)
 	cp config-full.plist $(INSTDIR)/config.plist
-	cp build/DSDT.aml SSDT-HACK.aml $(INSTDIR)/ACPI/patched
+	cp build/DSDT.aml SSDT-HACK.aml SSDT-DEBUG.aml $(INSTDIR)/ACPI/patched
 	sync; sync; sleep 2
 	diskutil eject $(INSTDISK)
 
@@ -202,3 +205,9 @@ $(BUILDDIR)/config.plist: config.patch $(CLOVERCONFIG)/config_HD5300_5500_5600_6
 
 $(BUILDDIR)/SSDT-RMNE.aml: SSDT-RMNE.dsl
 	$(IASL) $(IASLFLAGS) -p $@ $<
+
+binpatch-list:
+	../cloverbinpatch/makebinpatch.py '_Q0E\x00' 'XQ0E\x00' 'Rename Method(_Q0E,0) to XQ0E'
+	../cloverbinpatch/makebinpatch.py '_Q0F\x00' 'XQ0F\x00' 'Rename Method(_Q0E,0) to XQ0F'
+	../cloverbinpatch/makebinpatch.py '_QCD\x00' 'XQCD\x00' 'Rename Method(_QCD,0) to XQCD'
+
