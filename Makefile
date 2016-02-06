@@ -48,32 +48,7 @@ SLE=/System/Library/Extensions
 # DSDT is easy to find...
 DSDT=DSDT
 
-# The place where _SB.PCI0.PEG0 is defined is the IGPU SSDT
-#IGPU=$(shell grep -l Name.*_ADR.*0x00020000 $(UNPATCHED)/SSDT*.dsl)
-IGPU=$(shell grep -l Scope.*_SB.PCI0.PEG0 $(UNPATCHED)/SSDT*.dsl)
-IGPU:=$(subst $(UNPATCHED)/,,$(subst .dsl,,$(IGPU)))
-
-# The big complicated thermal table that mentionds GFX0
-DPTF=$(shell grep -l DefinitionBlock.*DptfTa $(UNPATCHED)/SSDT*.dsl)
-DPTF:=$(subst $(UNPATCHED)/,,$(subst .dsl,,$(DPTF)))
-
-# Most of the AML files we aren't going to touch, only copy.
-UNTOUCHED=$(shell echo $(UNPATCHED)/*.dsl)
-UNTOUCHED:=$(subst $(UNPATCHED)/,,$(subst .dsl,,$(UNTOUCHED)))
-UNTOUCHED:=$(filter-out $(DSDT) $(IGPU) $(DPTF),$(UNTOUCHED))
-
-UNTOUCHED_AML=$(addsuffix .aml,$(UNTOUCHED))
-
-# Here is the list of AML files we don't expect to touch, as a sanity check.
-ifneq ($(UNTOUCHED_AML),SSDT-0.aml SSDT-1.aml SSDT-10.aml SSDT-2.aml SSDT-3.aml SSDT-7.aml SSDT-9.aml)
-$(error The list of SSDTs I am planning to just copy unchanged is different than I expected. Perhaps SSDTs are missing or have been renamed. This script is expecting to only modify SSDT-8 and SSDT-11, and it uses those names in /usr/bin/patch invocations. Sorry; I wish you good luck in editing this makefile)
-endif
-
-UNTOUCHED_IN_NATIVE=$(addprefix $(NATIVE_ORIGIN)/, $(UNTOUCHED_AML))
-UNTOUCHED_IN_BUILDDIR=$(addprefix $(BUILDDIR)/, $(UNTOUCHED_AML))
-
-# Determine build products
-AML_PRODUCTS:=$(BUILDDIR)/$(DSDT).aml $(BUILDDIR)/$(IGPU).aml $(BUILDDIR)/$(DPTF).aml $(UNTOUCHED_IN_BUILDDIR)
+AML_PRODUCTS:=$(BUILDDIR)/$(DSDT).aml
 
 ifdef USE_NULLETHERNET
 AML_PRODUCTS+=$(BUILDDIR)/SSDT-RMNE.aml
@@ -81,11 +56,10 @@ endif
 
 PRODUCTS=$(AML_PRODUCTS) $(BUILDDIR)/config.plist
 
-ALL_PATCHED=$(PATCHED)/$(DSDT).dsl $(PATCHED)/$(IGPU).dsl $(PATCHED)/$(DPTF).dsl
+ALL_PATCHED=$(PATCHED)/$(DSDT).dsl
 
 IASLFLAGS=-ve
 IASL=iasl
-
 
 .PHONY: all
 all: $(PRODUCTS)
@@ -94,12 +68,6 @@ all: $(PRODUCTS)
 	@echo copy $(BUILDDIR)/config.plist to EFI/CLOVER/config.plist
 
 $(BUILDDIR)/DSDT.aml: $(PATCHED)/$(DSDT).dsl
-	$(IASL) $(IASLFLAGS) -p $@ $<
-
-$(BUILDDIR)/$(IGPU).aml: $(PATCHED)/$(IGPU).dsl
-	$(IASL) $(IASLFLAGS) -p $@ $<
-
-$(BUILDDIR)/$(DPTF).aml: $(PATCHED)/$(DPTF).dsl
 	$(IASL) $(IASLFLAGS) -p $@ $<
 
 .PHONY: clean
@@ -146,10 +114,6 @@ endif
 # $(RESOURCES)/layout/$(HDALAYOUT).xml.zlib: $(RESOURCES)/layout/$(HDALAYOUT).plist
 # 	./tools/zlib deflate $< >$@
 
-# $(BACKLIGHTINJECT): Backlight.plist patch_backlight.sh
-# 	./patch_backlight.sh
-# 	touch $@
-
 .PHONY: update_kernelcache
 update_kernelcache:
 	sudo touch $(SLE)
@@ -162,20 +126,6 @@ update_kernelcache:
 # 	if [ "`which tag`" != "" ]; then sudo tag -a Blue $(INSTDIR)/$(HDAINJECT); fi
 # 	make update_kernelcache
 
-# .PHONY: install_usb
-# install_usb:
-# 	sudo rm -Rf $(INSTDIR)/$(USBINJECT)
-# 	sudo cp -R ./$(USBINJECT) $(INSTDIR)
-# 	if [ "`which tag`" != "" ]; then sudo tag -a Blue $(INSTDIR)/$(USBINJECT); fi
-# 	make update_kernelcache
-
-# .PHONY: install_backlight
-# install_backlight:
-# 	sudo rm -Rf $(INSTDIR)/$(BACKLIGHTINJECT)
-# 	sudo cp -R ./$(BACKLIGHTINJECT) $(INSTDIR)
-# 	if [ "`which tag`" != "" ]; then sudo tag -a Blue $(INSTDIR)/$(BACKLIGHTINJECT); fi
-# 	make update_kernelcache
-
 # Patch with 'patchmatic'
 
 .PHONY: patch
@@ -185,47 +135,49 @@ PATCHTITLE=@./patchtitle
 
 $(PATCHED)/$(DSDT).dsl: $(UNPATCHED)/$(DSDT).dsl
 	cp $(UNPATCHED)/$(DSDT).dsl $(PATCHED)
-	$(PATCHTITLE) $@ patches syntax.txt
+	@# Changing _T temporaries to T makes it harder to diff against origin. So don't do that.
+	@# $(PATCHTITLE) $@ patches syntax.txt
 	$(PATCHTITLE) $@ $(LAPTOPGIT) syntax/remove_DSM.txt
-	# $(PATCHTITLE) $@ patches misc-UX303-LPC.txt
-	# This is probably *not* AddDTGP_0001. Examine more.
-	# $(PATCHTITLE) $@ patches DTGP.txt
-	# probably FixSBUS_0080
-	# $(PATCHTITLE) $@ $(LAPTOPGIT) system/system_SMBUS.txt
+	@# $(PATCHTITLE) $@ patches misc-UX303-LPC.txt
+	@# This is probably *not* AddDTGP_0001. Examine more.
+	@# $(PATCHTITLE) $@ patches DTGP.txt
+	@# probably FixSBUS_0080
+	@# $(PATCHTITLE) $@ $(LAPTOPGIT) system/system_SMBUS.txt
 	# Does not seem to hurt, might help some:
 	$(PATCHTITLE) $@ $(LAPTOPGIT) audio/audio_HDEF-layout3.txt
 	$(PATCHTITLE) $@ $(LAPTOPGIT) battery/battery_ASUS-N55SL.txt
-	# This would be FIX_WAK_200000 but is allegedly not necessary for >10.10.2, possibly 10.10.*
-	#$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_WAK2.txt
-	# This appears to be FixHPET_0010
-	#$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_HPET.txt
-	# this appears to be FixIPIC_0040
-	#$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_IRQ.txt
-	# this appears to be FIX_RTC_20000
-	#$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_RTC.txt
-	# no equivalent, patch makes no changes anyway
-	# $(PATCHTITLE) $@ $(LAPTOPGIT) system/system_PNOT.txt
-	# probably AddIMEI_80000
-	#$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_IMEI.txt
-	# already fixed ADGB
+	@# This would be FIX_WAK_200000 but is allegedly not necessary for >10.10.2, possibly 10.10.*
+	@#$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_WAK2.txt
+	@# This appears to be FixHPET_0010
+	@#$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_HPET.txt
+	@# this appears to be FixIPIC_0040
+	@#$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_IRQ.txt
+	@# this appears to be FIX_RTC_20000
+	@#$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_RTC.txt
+	@# no equivalent, patch makes no changes anyway
+	@# $(PATCHTITLE) $@ $(LAPTOPGIT) system/system_PNOT.txt
+	@# probably AddIMEI_80000
+	@#$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_IMEI.txt
+	@# already fixed ADGB
 	$(PATCHTITLE) $@ $(LAPTOPGIT) usb/usb_prw_0x6d_xhc.txt
-	# For IntelBacklight.kext, AddPNLF_1000000 is good enough.
-	# $(PATCHTITLE) $@ patches graphics_PNLF_haswell.txt
+	@# For IntelBacklight.kext, AddPNLF_1000000 is good enough.
+	@# $(PATCHTITLE) $@ patches graphics_PNLF_haswell.txt
 	$(PATCHTITLE) $@ patches ZenBooksLidSleepandScreenBackLightPatch.txt
 	$(PATCHTITLE) $@ patches ALSPatch-Haswell.txt
 	$(PATCHTITLE) $@ patches KeyboardBacklight.txt
 	$(PATCHTITLE) $@ patches BrightnessKeys_Patch.txt
-	#$(PATCHTITLE) $@ $(LAPTOPGIT) graphics/graphics_Rename-GFX0.txt
+	@# This is done through DSDT patching in Clover
+	@#$(PATCHTITLE) $@ $(LAPTOPGIT) graphics/graphics_Rename-GFX0.txt
 
-$(PATCHED)/$(IGPU).dsl: $(UNPATCHED)/$(IGPU).dsl 
-	cp $(UNPATCHED)/$(IGPU).dsl $(PATCHED)
-	cd $(PATCHED) && patch -p0 <../SSDT-11-ref.patch
-	# $(PATCHTITLE) $@ $(LAPTOPGIT) graphics/graphics_Rename-GFX0.txt
+# $(PATCHED)/$(IGPU).dsl: $(UNPATCHED)/$(IGPU).dsl 
+# 	cp $(UNPATCHED)/$(IGPU).dsl $(PATCHED)
+# 	cd $(PATCHED) && patch -p0 <../SSDT-11-ref.patch
+# 	# $(PATCHTITLE) $@ $(LAPTOPGIT) graphics/graphics_Rename-GFX0.txt
 
-$(PATCHED)/$(DPTF).dsl: $(UNPATCHED)/$(DPTF).dsl 
-	cp $(UNPATCHED)/$(DPTF).dsl $(PATCHED)
-	cd $(PATCHED) && patch -p0 <../SSDT-8-ref.patch
-	# $(PATCHTITLE) $@ $(LAPTOPGIT) graphics/graphics_Rename-GFX0.txt
+# $(PATCHED)/$(DPTF).dsl: $(UNPATCHED)/$(DPTF).dsl 
+# 	cp $(UNPATCHED)/$(DPTF).dsl $(PATCHED)
+# 	cd $(PATCHED) && patch -p0 <../SSDT-8-ref.patch
+# 	# $(PATCHTITLE) $@ $(LAPTOPGIT) graphics/graphics_Rename-GFX0.txt
 
 .PHONY: build2
 build2:
@@ -244,10 +196,6 @@ install2:
 	cp build/DSDT.aml $(INSTDIR)/ACPI/patched
 	sync; sync; sleep 2
 	diskutil eject $(INSTDISK)
-
-
-$(UNTOUCHED_IN_BUILDDIR): $(BUILDDIR)/%: $(NATIVE_ORIGIN)/%
-	cp $< $@
 
 $(BUILDDIR)/config.plist: config.patch $(CLOVERCONFIG)/config_HD5300_5500_5600_6000.plist
 	patch -o $(BUILDDIR)/config.plist $(CLOVERCONFIG)/config_HD5300_5500_5600_6000.plist config.patch
