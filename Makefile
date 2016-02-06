@@ -193,7 +193,7 @@ install2:
 	[ ! -d /Volumes/EFI ] || diskutil unmount /Volumes/EFI
 	diskutil mount $(INSTDISK)
 	cp config-full.plist $(INSTDIR)/config.plist
-	cp build/DSDT.aml $(INSTDIR)/ACPI/patched
+	cp build/DSDT.aml SSDT-HACK.aml $(INSTDIR)/ACPI/patched
 	sync; sync; sleep 2
 	diskutil eject $(INSTDISK)
 
