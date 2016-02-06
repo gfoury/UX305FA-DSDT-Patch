@@ -1,5 +1,5 @@
 --- clover-laptop-config/config_HD5300_5500_5600_6000.plist	2016-01-27 12:45:36.000000000 -0500
-+++ config.plist	2016-02-04 09:32:09.000000000 -0500
++++ config.plist	2016-02-06 09:50:11.000000000 -0500
 @@ -8,6 +8,7 @@
  		<string>This is the original order supported by Clover prior to build v3062.  You can trim it as necessary.</string>
  		<key>SortedOrder</key>
@@ -45,3 +45,12 @@
  		</dict>
  		<key>DropTables</key>
  		<array>
+@@ -244,7 +274,7 @@
+ 				<key>Comment</key>
+ 				<string>Boot graphics glitch, 10.10.x/10.11.x (credit lisai9093, cecekpawon)</string>
+ 				<key>Disabled</key>
+-				<true/>
++				<false/>
+ 				<key>Find</key>
+ 				<data>AQAAdRc=</data>
+ 				<key>Name</key>
