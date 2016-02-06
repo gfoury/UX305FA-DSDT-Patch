@@ -1,4 +1,5 @@
 .DS_Store
+config.plist
 stash/*
 downloads/*
 patched/ssdt*.dsl
