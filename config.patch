@@ -1,16 +1,17 @@
 --- clover-laptop-config/config_HD5300_5500_5600_6000.plist	2016-01-27 12:45:36.000000000 -0500
-+++ build/config.plist	2016-02-06 17:12:11.000000000 -0500
-@@ -8,6 +8,9 @@
++++ config_master.plist	2016-02-07 15:09:51.000000000 -0500
+@@ -8,6 +8,10 @@
  		<string>This is the original order supported by Clover prior to build v3062.  You can trim it as necessary.</string>
  		<key>SortedOrder</key>
  		<array>
 +			<string>SSDT-RMNE.aml</string>
 +			<string>SSDT-HACK.aml</string>
 +			<string>SSDT-DEBUG.aml</string>
++			<string>SSDT-ALS.aml</string>
  			<string>SSDT.aml</string>
  			<string>SSDT-0.aml</string>
  			<string>SSDT-1.aml</string>
-@@ -38,7 +41,80 @@
+@@ -38,7 +42,100 @@
  				<true/>
  				<key>NewWay_80000000</key>
  				<true/>
@@ -31,6 +32,14 @@
  			</dict>
 +			<key>Patches</key>
 +			<array>
++				<dict>
++					<key>Comment</key>
++					<string>change _DSM to XDSM</string>
++					<key>Find</key>
++					<data>X0RTTQ==</data>
++					<key>Replace</key>
++					<data>WERTTQ==</data>
++				</dict>
 +			        <dict>
 +					<key>Comment</key>
 +					<string>change GFX0 to IGPU</string>
@@ -87,11 +96,23 @@
 +					WFFDRAA=
 +					</data>
 +				</dict>
++				<dict>
++					<key>Comment</key>
++					<string>Rename Method(GPRW,2) to Method(XPRW,2)</string>
++					<key>Find</key>
++					<data>
++					R1BSVwI=
++					</data>
++					<key>Replace</key>
++					<data>
++					WFBSVwI=
++					</data>
++				</dict>
 +			</array>
  		</dict>
  		<key>DropTables</key>
  		<array>
-@@ -244,7 +320,7 @@
+@@ -244,7 +341,7 @@
  				<key>Comment</key>
  				<string>Boot graphics glitch, 10.10.x/10.11.x (credit lisai9093, cecekpawon)</string>
  				<key>Disabled</key>

@@ -6,6 +6,7 @@ DefinitionBlock ("SSDT-ALS.aml", "SSDT", 1, "hack", "als", 0x00003000)
 {
  	External(\_SB.PCI0.LPCB.EC0, DeviceObj)
 	External(\_SB.PCI0.LPCB.EC0.RALS, MethodObj)
+	External(\_SB.ALS, DeviceObj)
 	External(ATKP, IntObj)
 	External(\_SB.ATKD, DeviceObj)	
 	External(\_SB.ATKD.IANE, MethodObj)
@@ -28,12 +29,13 @@ DefinitionBlock ("SSDT-ALS.aml", "SSDT", 1, "hack", "als", 0x00003000)
 			If (ATKP)
 			{
 				\RMDT.P2("ALS sensor:", ^^^^ATKD.ALSS())
+				Notify(ALS, 0x80)
 				// This notification code does not appear to be native to this BIOS. I wonder if that is intentional.
 				// ^^^^ATKD.IANE (0xC7)
 				// What _QCD does call is 0xC6
 				^^^^ATKD.IANE (0xC6)
 			}
-	       	}
+		}
 	}
 
 	

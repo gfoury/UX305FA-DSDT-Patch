@@ -1,0 +1,4 @@
+Delete :SMBIOS
+Add :SMBIOS dict
+Merge smbios.plist :SMBIOS
+Save

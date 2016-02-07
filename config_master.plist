@@ -11,6 +11,7 @@
 			<string>SSDT-RMNE.aml</string>
 			<string>SSDT-HACK.aml</string>
 			<string>SSDT-DEBUG.aml</string>
+			<string>SSDT-ALS.aml</string>
 			<string>SSDT.aml</string>
 			<string>SSDT-0.aml</string>
 			<string>SSDT-1.aml</string>
@@ -58,6 +59,14 @@
 			</dict>
 			<key>Patches</key>
 			<array>
+				<dict>
+					<key>Comment</key>
+					<string>change _DSM to XDSM</string>
+					<key>Find</key>
+					<data>X0RTTQ==</data>
+					<key>Replace</key>
+					<data>WERTTQ==</data>
+				</dict>
 			        <dict>
 					<key>Comment</key>
 					<string>change GFX0 to IGPU</string>
@@ -112,6 +121,18 @@
 					<key>Replace</key>
 					<data>
 					WFFDRAA=
+					</data>
+				</dict>
+				<dict>
+					<key>Comment</key>
+					<string>Rename Method(GPRW,2) to Method(XPRW,2)</string>
+					<key>Find</key>
+					<data>
+					R1BSVwI=
+					</data>
+					<key>Replace</key>
+					<data>
+					WFBSVwI=
 					</data>
 				</dict>
 			</array>

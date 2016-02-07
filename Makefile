@@ -48,7 +48,7 @@ SLE=/System/Library/Extensions
 # DSDT is easy to find...
 DSDT=DSDT
 
-AML_PRODUCTS:=$(BUILDDIR)/$(DSDT).aml
+AML_PRODUCTS:=$(BUILDDIR)/$(DSDT).aml $(BUILDDIR)/SSDT-HACK.aml $(BUILDDIR)/SSDT-ALS.aml $(BUILDDIR)/SSDT-DEBUG.aml
 
 ifdef USE_NULLETHERNET
 AML_PRODUCTS+=$(BUILDDIR)/SSDT-RMNE.aml
@@ -137,14 +137,14 @@ $(PATCHED)/$(DSDT).dsl: $(UNPATCHED)/$(DSDT).dsl
 	cp $(UNPATCHED)/$(DSDT).dsl $(PATCHED)
 	@# Changing _T temporaries to T makes it harder to diff against origin. So don't do that.
 	@# $(PATCHTITLE) $@ patches syntax.txt
-	$(PATCHTITLE) $@ $(LAPTOPGIT) syntax/remove_DSM.txt
+	#$(PATCHTITLE) $@ $(LAPTOPGIT) syntax/remove_DSM.txt
 	@# $(PATCHTITLE) $@ patches misc-UX303-LPC.txt
 	@# This is probably *not* AddDTGP_0001. Examine more.
 	@# $(PATCHTITLE) $@ patches DTGP.txt
 	@# probably FixSBUS_0080
 	@# $(PATCHTITLE) $@ $(LAPTOPGIT) system/system_SMBUS.txt
 	# Does not seem to hurt, might help some:
-	$(PATCHTITLE) $@ $(LAPTOPGIT) audio/audio_HDEF-layout3.txt
+	#$(PATCHTITLE) $@ $(LAPTOPGIT) audio/audio_HDEF-layout3.txt
 	$(PATCHTITLE) $@ $(LAPTOPGIT) battery/battery_ASUS-N55SL.txt
 	@# This would be FIX_WAK_200000 but is allegedly not necessary for >10.10.2, possibly 10.10.*
 	@#$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_WAK2.txt
@@ -159,10 +159,10 @@ $(PATCHED)/$(DSDT).dsl: $(UNPATCHED)/$(DSDT).dsl
 	@# probably AddIMEI_80000
 	@#$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_IMEI.txt
 	@# already fixed ADGB
-	$(PATCHTITLE) $@ $(LAPTOPGIT) usb/usb_prw_0x6d_xhc.txt
+	#$(PATCHTITLE) $@ $(LAPTOPGIT) usb/usb_prw_0x6d_xhc.txt
 	@# For IntelBacklight.kext, AddPNLF_1000000 is good enough.
 	@# $(PATCHTITLE) $@ patches graphics_PNLF_haswell.txt
-	$(PATCHTITLE) $@ patches ZenBooksLidSleepandScreenBackLightPatch.txt
+	#$(PATCHTITLE) $@ patches ZenBooksLidSleepandScreenBackLightPatch.txt
 	@# This is now done through SSDT-ALS and Clover
 	@#$(PATCHTITLE) $@ patches ALSPatch-Haswell.txt
 	# Try without EMlyDinEsH's patch
@@ -192,19 +192,34 @@ build2:
 INSTDIR=/Volumes/EFI/EFI/CLOVER
 INSTDISK=/dev/disk1s1
 .PHONY: install2
-install2:
+install2: build/config-full.plist $(AML_PRODUCTS)
 	[ ! -d /Volumes/EFI ] || diskutil unmount /Volumes/EFI
 	diskutil mount $(INSTDISK)
-	cp config-full.plist $(INSTDIR)/config.plist
-	cp build/DSDT.aml SSDT-HACK.aml SSDT-DEBUG.aml $(INSTDIR)/ACPI/patched
+	cp build/config-full.plist $(INSTDIR)/config.plist
+	cp $(AML_PRODUCTS) $(INSTDIR)/ACPI/patched
 	sync; sync; sleep 2
 	diskutil eject $(INSTDISK)
+
+build/config-full.plist: config_master.plist smbios.plist
+	cp config_master.plist build/config-full.plist
+	cat pbuddy-merge-smbios | /usr/libexec/PlistBuddy -x build/config-full.plist
 
 $(BUILDDIR)/config.plist: config.patch $(CLOVERCONFIG)/config_HD5300_5500_5600_6000.plist
 	patch -o $(BUILDDIR)/config.plist $(CLOVERCONFIG)/config_HD5300_5500_5600_6000.plist config.patch
 
 $(BUILDDIR)/SSDT-RMNE.aml: SSDT-RMNE.dsl
 	$(IASL) $(IASLFLAGS) -p $@ $<
+
+$(BUILDDIR)/SSDT-HACK.aml: SSDT-HACK.dsl
+	$(IASL) $(IASLFLAGS) -p $@ $<
+
+$(BUILDDIR)/SSDT-ALS.aml: SSDT-ALS.dsl
+	$(IASL) $(IASLFLAGS) -p $@ $<
+
+$(BUILDDIR)/SSDT-DEBUG.aml: SSDT-DEBUG.dsl
+	$(IASL) $(IASLFLAGS) -p $@ $<
+
+
 
 binpatch-list:
 	../cloverbinpatch/makebinpatch.py '_Q0E\x00' 'XQ0E\x00' 'Rename Method(_Q0E,0) to XQ0E'
