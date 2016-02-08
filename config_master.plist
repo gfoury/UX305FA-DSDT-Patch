@@ -12,6 +12,7 @@
 			<string>SSDT-HACK.aml</string>
 			<string>SSDT-DEBUG.aml</string>
 			<string>SSDT-ALS.aml</string>
+			<string>SSDT-BATT.aml</string>
 			<string>SSDT.aml</string>
 			<string>SSDT-0.aml</string>
 			<string>SSDT-1.aml</string>
@@ -133,6 +134,90 @@
 					<key>Replace</key>
 					<data>
 					WFBSVwI=
+					</data>
+				</dict>
+				<dict>
+					<key>Comment</key>
+					<string>Battery: Rename Method(_BIX,0) to Method(XBIX,0)</string>
+					<key>Find</key>
+					<data>
+					X0JJWAA=
+					</data>
+					<key>Replace</key>
+					<data>
+					WEJJWAA=
+					</data>
+				</dict>
+				<dict>
+					<key>Comment</key>
+					<string>Battery: Rename Method(TACH,1, Serialized) to Method(XTAC,1,Serialized)</string>
+					<key>Find</key>
+					<data>
+					VEFDSAk=
+					</data>
+					<key>Replace</key>
+					<data>
+					WFRBQwk=
+					</data>
+				</dict>
+				<dict>
+					<key>Comment</key>
+					<string>Battery: Rename Method(BIFA,0) to Method(XBIF,0)</string>
+					<key>Find</key>
+					<data>
+					QklGQQA=
+					</data>
+					<key>Replace</key>
+					<data>
+					WEJJRgA=
+					</data>
+				</dict>
+				<dict>
+					<key>Comment</key>
+					<string>Battery: Rename Method(SMBR,3,Serialized) to Method(XSMB,3,Serialized)</string>
+					<key>Find</key>
+					<data>
+					U01CUgs=
+					</data>
+					<key>Replace</key>
+					<data>
+					WFNNQgs=
+					</data>
+				</dict>
+				<dict>
+					<key>Comment</key>
+					<string>Battery: Rename Method(SMBW,5,Serialized) to Method(XSMW,5,Serialized)</string>
+					<key>Find</key>
+					<data>
+					U01CVw0=
+					</data>
+					<key>Replace</key>
+					<data>
+					WFNNVw0=
+					</data>
+				</dict>
+				<dict>
+					<key>Comment</key>
+					<string>Battery: Rename Method(ECSB,7) to Method(XCSB,7)</string>
+					<key>Find</key>
+					<data>
+					RUNTQgc=
+					</data>
+					<key>Replace</key>
+					<data>
+					WENTQgc=
+					</data>
+				</dict>
+				<dict>
+					<key>Comment</key>
+					<string>Battery: Rename Method(FBST,4) to Method(XBST,4)</string>
+					<key>Find</key>
+					<data>
+					RkJTVAQ=
+					</data>
+					<key>Replace</key>
+					<data>
+					WEJTVAQ=
 					</data>
 				</dict>
 			</array>

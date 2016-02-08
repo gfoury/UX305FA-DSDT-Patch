@@ -48,7 +48,7 @@ SLE=/System/Library/Extensions
 # DSDT is easy to find...
 DSDT=DSDT
 
-AML_PRODUCTS:=$(BUILDDIR)/$(DSDT).aml $(BUILDDIR)/SSDT-HACK.aml $(BUILDDIR)/SSDT-ALS.aml $(BUILDDIR)/SSDT-DEBUG.aml
+AML_PRODUCTS:=$(BUILDDIR)/$(DSDT).aml $(BUILDDIR)/SSDT-HACK.aml $(BUILDDIR)/SSDT-ALS.aml $(BUILDDIR)/SSDT-DEBUG.aml $(BUILDDIR)/SSDT-BATT.aml
 
 ifdef USE_NULLETHERNET
 AML_PRODUCTS+=$(BUILDDIR)/SSDT-RMNE.aml
@@ -145,7 +145,7 @@ $(PATCHED)/$(DSDT).dsl: $(UNPATCHED)/$(DSDT).dsl
 	@# $(PATCHTITLE) $@ $(LAPTOPGIT) system/system_SMBUS.txt
 	# Does not seem to hurt, might help some:
 	#$(PATCHTITLE) $@ $(LAPTOPGIT) audio/audio_HDEF-layout3.txt
-	$(PATCHTITLE) $@ $(LAPTOPGIT) battery/battery_ASUS-N55SL.txt
+	# $(PATCHTITLE) $@ $(LAPTOPGIT) battery/battery_ASUS-N55SL.txt
 	@# This would be FIX_WAK_200000 but is allegedly not necessary for >10.10.2, possibly 10.10.*
 	@#$(PATCHTITLE) $@ $(LAPTOPGIT) system/system_WAK2.txt
 	@# This appears to be FixHPET_0010
@@ -219,6 +219,9 @@ $(BUILDDIR)/SSDT-ALS.aml: SSDT-ALS.dsl
 $(BUILDDIR)/SSDT-DEBUG.aml: SSDT-DEBUG.dsl
 	$(IASL) $(IASLFLAGS) -p $@ $<
 
+$(BUILDDIR)/SSDT-BATT.aml: SSDT-BATT.dsl
+	$(IASL) $(IASLFLAGS) -p $@ $<
+
 
 
 binpatch-list:
@@ -226,3 +229,11 @@ binpatch-list:
 	../cloverbinpatch/makebinpatch.py '_Q0F\x00' 'XQ0F\x00' 'Rename Method(_Q0E,0) to XQ0F'
 	../cloverbinpatch/makebinpatch.py '_QCD\x00' 'XQCD\x00' 'Rename Method(_QCD,0) to XQCD'
 
+#  124  ../cloverbinpatch/makebinpatch.py 'GPRW\x02' 'XPRW\x02' 'Rename Method(GPRW,2) to Method(XPRW,2)'
+#  517  ../cloverbinpatch/makebinpatch.py '_BIX\x00' 'XBIX\x00' 'Rename Method(_BIX,0) to Method(XBIX,0)'
+#  524  ../cloverbinpatch/makebinpatch.py 'TACH\x09' 'XTAC\x09' 'Battery: Rename Method(TACH,0) to Method(XTAC,0)'
+#  526  ../cloverbinpatch/makebinpatch.py 'BIFA\x00' 'XBIF\x00' 'Battery: Rename Method(BIFA,0) to Method(XBIF,0)'
+#  528  ../cloverbinpatch/makebinpatch.py 'SMBR\x0b' 'XSMB\x0b' 'Battery: Rename Method(SMBR,3,Serialized) to Method(XSMB,3,Serialized)'
+#  531  ../cloverbinpatch/makebinpatch.py 'SMBW\x0d' 'XSMW\x0d' 'Battery: Rename Method(SMBW,5,Serialized) to Method(XSMW,5,Serialized)'
+#  543  ../cloverbinpatch/makebinpatch.py 'ECSB\x07' 'XCSB\x07' 'Battery: Rename Method(ECSB,7) to Method(XCSB,7)'
+#  545  ../cloverbinpatch/makebinpatch.py 'FBST\x04' 'XBST\x04' 'Battery: Rename Method(FBST,4) to Method(XBST,4)'
