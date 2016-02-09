@@ -29,7 +29,7 @@ download os-x-acpi-battery-driver RehabMan-Battery
 #download os-x-eapd-codec-commander RehabMan-CodecCommander
 download os-x-fake-pci-id RehabMan-FakePCIID
 download os-x-brcmpatchram RehabMan-BrcmPatchRAM
-#download os-x-acpi-debug RehabMan-Debug
+download os-x-acpi-debug RehabMan-Debug
 download os-x-null-ethernet RehabMan-NullEthernet
 #download os-x-usb-inject-all RehabMan-USBInjectAll
 cd ..
