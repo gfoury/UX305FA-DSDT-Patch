@@ -19,3 +19,4 @@ native_patchmatic/*
 !native_patchmatic/readme.txt
 native_clover/origin/*
 !native_clover/origin/readme.txt
+SMBIOS.plist
