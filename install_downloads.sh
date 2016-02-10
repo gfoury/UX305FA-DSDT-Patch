@@ -171,11 +171,8 @@ fi
 # install (injector) kexts in the repo itself
 # install_kext AppleHDA_ALC290.kext
 
-install_kext_zip SmartTouchPad_v4.4_Final_64bit.zip ApplePS2SmartTouchPad.kext
-install_kext_zip AsusNBFnKeys_v2.4_Final.zip AsusNBFnKeys.kext
-
-
-
+(cd ../.. && install_kext_zip SmartTouchPad_v4.4_Final_64bit.zip ApplePS2SmartTouchPad.kext)
+(cd ../.. && install_kext_zip AsusNBFnKeys_v2.4_Final.zip AsusNBFnKeys.kext)
 
 # if [[ $MINOR_VER -ge 11 ]]; then
 #     install_kext USBXHC_Envy.kext
