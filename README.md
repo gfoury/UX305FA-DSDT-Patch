@@ -26,15 +26,21 @@ After `sh download.sh` and `make`, you'll copy this whole directory, `UX305FA-DS
 
 Create your 10.11 installation USB drive according to [RehabMan's guide] (http://www.tonymacx86.com/el-capitan-laptop-support/148093-guide-booting-os-x-installer-laptops-clover.html).
 
+The only directory in `EFI/CLOVER/kexts` should be `Other`. `EFI/CLOVER/kexts/Other` should only contain `FakeSMC.kext` (from `downloads/kexts/RehabMan-FakeSMC-2015-1230.zip`) and `ApplePS2SmartTouchPad.kext` (from `SmartTouchPad_v4.4_Final_64bit.zip`).
+
 RehabMan's config file [`config_HD5300_5500_5600_6000.plist`] (https://github.com/RehabMan/OS-X-Clover-Laptop-Config/raw/master/config_HD5300_5500_5600_6000.plist) is a good choice for `config.plist`. Change `Graphics/Inject/Intel` to `false` for initial installation.
 
-If you do not have another USB drive handy, you could copy `UX305FA-DSDT-Patch` and the Clover installer to the `Install OS X El Capitan` disk.
+You will need these files handy on the target machine: `FakeSMC.kext`, `ApplePS2SmartTouchPad.kext`, `HFSPlus.efi`, this `UX305FA-DSDT-Patch` directory, and the Clover installer. If you do not have another USB drive handy, you could copy those files to a folder on the `Install OS X El Capitan` disk.
 
 ## Target
 
 ### Installing OS X
 
 Follow [RehabMan's installation guide] (http://www.tonymacx86.com/el-capitan-laptop-support/148093-guide-booting-os-x-installer-laptops-clover.html#post917904).
+
+There is currently a bug in the trackpad driver: scrolling will not work until you have opened System Preferences:Trackpad, and changed "Scrolling speed" at least once. It can be difficult to navigate the Clover installer without scrolling.
+
+Remember to install `HFSPlus.efi`, `FakeSMC.kext`, and `ApplePS2SmartTouchPad.kext` to the EFI partition. You should be able to reboot from the target disk after that.
 
 ### Installing the patches
 
@@ -46,11 +52,13 @@ If you have the 1920x1080 display, `config.plist` is done. However, if you have 
 
 I hate the ambient light sensor, and its driver has never worked right for me. Feel free to remove `EFI/CLOVER/ACPI/patched/SSDT-ALS.dsl`.
 
+Once you're done with file copying (don't forget to put `HFSPlus.efi` in `EFI/CLOVER/drivers64UEFI/`) you should be able to reboot from the installed disk.
+
 ### Installing drivers and tools
 
 I recommend not logging into any Apple services until you have completed this section.
 
-On the target machine, you can run `sh install_downloads.sh` in this `UX305FA-DSDT-Patch` directory to set up kexts. This installs:
+On the target machine, you can run `sudo ./install_downloads.sh` in this `UX305FA-DSDT-Patch` directory to set up kexts. This installs:
 
 * `ACPIBatteryManager`
 * `ACPIDebug`
@@ -69,7 +77,7 @@ The kexts will be installed into `/Library/Extensions`.
 
 In this `UX305FA-DSDT-Patch` directory is `AX88772-USB-Ethernet.dmg`, which is a driver for the USB Ethernet dongle which comes with the UX305FA. Note that it appears to replace the Apple USB Ethernet driver. It does come with an uninstall/restore script.
 
-Sound won't work without a driver. I currently use VoodooHDA for sound. If you want to try patching `AppleHDA`, the `SSDT-HACK.aml` already includes layout-3 properties. It is untested.
+Sound won't work without a driver. I currently use VoodooHDA  for sound. It is available in `downloads/pkgs/`. If you want to try patching `AppleHDA`, the `SSDT-HACK.aml` already includes layout-3 properties. It is untested.
 
 You still need CPU power management. See [the Beta branch of `Piker-Alpha/ssdtPRGen.sh`] (https://github.com/Piker-Alpha/ssdtPRGen.sh/tree/Beta). (The `master` branch will not work.) The `SSDT.aml` it generates needs to go in the EFI partition's `EFI/CLOVER/ACPI/patched` directory.
 
