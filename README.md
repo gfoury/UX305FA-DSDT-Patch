@@ -4,7 +4,28 @@ This is a collection of DSDT/SSDT patches and tools for the ASUS UX305FA laptop 
 
 It requires Clover r3328 or later.
 
-Note that the UX305FA's factory WiFi card does not have drivers. The Dell DW1560 is a good replacement.
+#### What you should expect works
+
+* Keyboard and touchpad
+* Battery
+* Fn-keys
+* Brightness
+* Sleep
+* Bluetooth
+* WiFi when replaced (tested: Dell DW1560 WiFi)
+
+#### Lightly tested
+
+* Ambient Light Sensor (ALS)
+
+#### Optional, drivers included:
+
+* Sound, using VoodooHDA
+* The Ethernet dongle included with the UX305FA
+
+#### Will never work
+
+* Factory Intel WiFi card.
 
 These instructions are broken into two sections. The first, "Building", needs to be done on a working Mac. The second, "Target", is run on the UX305FA.
 
@@ -12,7 +33,9 @@ These instructions are broken into two sections. The first, "Building", needs to
 
 ### Downloading
 
-The command `sh download.sh` will download a collection of drivers into `downloads/`. If you don't have `iasl` on your PATH, unzip it from `downloads/tools/` into `tools/`, which is on the `PATH` for the Makefile.
+Clone or download `UX305FA-DSDT-Patch` from GitHub.
+
+In this directory, the command `sh download.sh` will download a collection of drivers into `downloads/`. If you don't have `iasl` on your PATH, unzip it from `downloads/tools/` into `tools/`, which is on the `PATH` for the Makefile.
 
 ### Building AML files
 
@@ -20,43 +43,102 @@ For your UX305FA, you may later need a builtin Ethernet device (for the App Stor
 
 To build the AML files from DSL source, type `make`.
 
-After `sh download.sh` and `make`, you'll copy this whole directory, `UX305FA-DSDT-Patch`, to the destination machine.
+After `sh download.sh` and `make`, you will later copy this whole directory, `UX305FA-DSDT-Patch`, to the destination machine.
 
 ### Installation media
 
-Create your 10.11 installation USB drive according to [RehabMan's guide] (http://www.tonymacx86.com/el-capitan-laptop-support/148093-guide-booting-os-x-installer-laptops-clover.html).
+Create your 10.11 installation USB drive according to [RehabMan's guide] (http://www.tonymacx86.com/el-capitan-laptop-support/148093-guide-booting-os-x-installer-laptops-clover.html). Some notes:
 
-The only directory in `EFI/CLOVER/kexts` should be `Other`. `EFI/CLOVER/kexts/Other` should only contain `FakeSMC.kext` (from `downloads/kexts/RehabMan-FakeSMC-2015-1230.zip`) and `ApplePS2SmartTouchPad.kext` (from `SmartTouchPad_v4.4_Final_64bit.zip`).
+* We want Clover UEFI, not Clover Legacy.
+* For partitioning the USB drive, GPT is preferred. (I have not tested MBR.)
+
+#### Mounting the installer's EFI partition
+
+Because we're using the GPT format, the EFI partition on the USB installer is not automatically mounted when the drive is inserted.
+
+There is a quirk in the Clover installer: after installing to USB, the USB EFI partition may be mounted at `/Volumes/ESP`.
+
+If you want to mount the USB EFI partition at another time:
+
+1. If `/Volumes/EFI` already exists, use `diskutil unmont /Volumes/EFI` to unmount it.
+2. Run `diskutil list` to find the disk number of the USB drive, like `disk1`
+3. Run `diskutil mount /dev/disk1s1` to mount the EFI partition at `/Volumes/EFI`
+
+### Configuring Clover for the installer
+
+On the USB EFI partition, the only directory in `EFI/CLOVER/kexts` should be `Other`. `EFI/CLOVER/kexts/Other` should only contain `FakeSMC.kext` (from `downloads/kexts/RehabMan-FakeSMC-2015-1230.zip`) and `ApplePS2SmartTouchPad.kext` (from `SmartTouchPad_v4.4_Final_64bit.zip`).
 
 RehabMan's config file [`config_HD5300_5500_5600_6000.plist`] (https://github.com/RehabMan/OS-X-Clover-Laptop-Config/raw/master/config_HD5300_5500_5600_6000.plist) is a good choice for `config.plist`. Change `Graphics/Inject/Intel` to `false` for initial installation.
 
-You will need these files handy on the target machine: `FakeSMC.kext`, `ApplePS2SmartTouchPad.kext`, `HFSPlus.efi`, this `UX305FA-DSDT-Patch` directory, and the Clover installer. If you do not have another USB drive handy, you could copy those files to a folder on the `Install OS X El Capitan` disk.
+### Copying files to USB
+
+You will need these files handy on the target machine: the `UX305FA-DSDT-Patch` directory you prepared, `FakeSMC.kext`, `ApplePS2SmartTouchPad.kext`, `HFSPlus.efi`, and the Clover installer. Copy them to a USB drive. If you do not have another USB drive handy, you could copy those files to a folder on the `Install OS X El Capitan` disk.
 
 ## Target
+
+### BIOS settings
+
+To get into the BIOS on this machine, press `ESC` while the "ASUS" logo is on screen.
+
+Reset the BIOS settings to default with the menu item "Save & Exit: Restore Defaults".
+
+Under "Security: Secure Boot menu", set "Secure Boot Control" to Disabled.
+
+Under "Boot", set "Fast Boot" to Disabled, and "Launch CSM" to Enabled.
+
+Under "Advanced", set "VT-d" to Disabled.
+
+Under "Advanced: Graphics Configuration", set "DVMT Pre-Allocated" to 128M.
+
+Don't forget to "Save & Exit: Save Changes".
 
 ### Installing OS X
 
 Follow [RehabMan's installation guide] (http://www.tonymacx86.com/el-capitan-laptop-support/148093-guide-booting-os-x-installer-laptops-clover.html#post917904).
 
+Once you've reached "Post Installation" in RehabMan's guide, you'll need to copy the files described in "Copying files to USB" to the Desktop. After copying, I recommend ejecting all USB drives at this point.
+
 There is currently a bug in the trackpad driver: scrolling will not work until you have opened System Preferences:Trackpad, and changed "Scrolling speed" at least once. It can be difficult to navigate the Clover installer without scrolling.
 
-Remember to install `HFSPlus.efi`, `FakeSMC.kext`, and `ApplePS2SmartTouchPad.kext` to the EFI partition. You should be able to reboot from the target disk after that.
+Install Clover as described in the guide.
+
+There is a quirk in the Clover installer: after installing, the EFI partition may be mounted at `/Volumes/ESP`.
+
+Otherwise, to mount the *hard drive* EFI partition:
+
+1. If `/Volumes/EFI` already exists, use `diskutil unmont /Volumes/EFI` to unmount it.
+2. Run `diskutil list` to find the disk number of the hard drive. It is very likely `disk0`.
+3. Run `diskutil mount /dev/disk0s1` to mount the EFI partition at `/Volumes/EFI`
+
+Because there will be an EFI partition on both your installation media and the hard drive, mounting the right EFI partition can be tricky. It is less prone to human error if you don't have any USB disks plugged in.
+
+After installing Clover, remember to install `HFSPlus.efi`, `FakeSMC.kext`, and `ApplePS2SmartTouchPad.kext` to the hard drive's EFI partition as you did with the USB install media.
 
 ### Installing the patches
 
 From the `UX305FA-DSDT-Patch` directory, copy `build/*.aml` to the EFI partition's `EFI/CLOVER/ACPI/patched` directory.
 
-The AML files completely depend on DSDT/SSDT patches done by Clover according to `config.plist`. Copy `build/config.plist` to `EFI/CLOVER/config.plist`.
+The AML files completely depend on DSDT/SSDT patches done by Clover according to the `config.plist`. Copy `build/config.plist` to `EFI/CLOVER/config.plist`.
 
-If you have the 1920x1080 display, `config.plist` is done. However, if you have the QHD/UHD display, `Graphics/Install/Intel` set to true will cause a hang at boot until you have patched IOKit. For QHD/UHD, set it back to false until patched. On other machines, I use `macPixelClockPatcher.command` from [floris497's repository] (https://github.com/floris497/mac-pixel-clock-patch) to patch IOKit.
+If you have the 1920x1080 display, `config.plist` is done. See the next section if you have a QHD/UHD display.
 
-I hate the ambient light sensor, and its driver has never worked right for me. Feel free to remove `EFI/CLOVER/ACPI/patched/SSDT-ALS.dsl`.
+I hate the ambient light sensor, and its driver has never worked quite right for me. Feel free to remove `EFI/CLOVER/ACPI/patched/SSDT-ALS.dsl`.
 
-Once you're done with file copying (don't forget to put `HFSPlus.efi` in `EFI/CLOVER/drivers64UEFI/`) you should be able to reboot from the installed disk.
+Once you're done with this section, you should be able to reboot from the hard drive.
+
+#### Side note: QHD/UHD displays
+
+(Skip this section if you have the FHD/1920x1080 display.)
+
+If you have the QHD/UHD display, the `config.plist` option `Graphics/Inject/Intel` set to true will cause a hang at boot until you have patched IOKit. Turn off Intel injection by setting `Graphics/Inject/Intel` to false until then.
+
+To patch IOKit on QHD/UHD machines, I use `macPixelClockPatcher.command` from [floris497's repository] (https://github.com/floris497/mac-pixel-clock-patch).
+
+OS upgrades tend to overwrite the IOKit patch, which can make your QHD/UHD machine unbootable with injection. You can disable `Graphics/Inject/Intel` for a single boot using Clover options. On the main Clover screen, press `O` to bring up Options, choose `Graphics Injector menu` then press space on the `InjectIntel` option. Press `ESC` twice and boot normally. Once you're in the OS, you can re-run the IOKit patcher.
 
 ### Installing drivers and tools
 
-I recommend not logging into any Apple services until you have completed this section.
+I recommend not logging into any Apple services until you have completed this section and the next.
 
 On the target machine, you can run `sudo ./install_downloads.sh` in this `UX305FA-DSDT-Patch` directory to set up kexts. This installs:
 
@@ -79,9 +161,11 @@ In this `UX305FA-DSDT-Patch` directory is `AX88772-USB-Ethernet.dmg`, which is a
 
 Sound won't work without a driver. I currently use VoodooHDA  for sound. It is available in `downloads/pkgs/`. If you want to try patching `AppleHDA`, the `SSDT-HACK.aml` already includes layout-3 properties. It is untested.
 
+### Once you have a network
+
 You still need CPU power management. See [the Beta branch of `Piker-Alpha/ssdtPRGen.sh`] (https://github.com/Piker-Alpha/ssdtPRGen.sh/tree/Beta). (The `master` branch will not work.) The `SSDT.aml` it generates needs to go in the EFI partition's `EFI/CLOVER/ACPI/patched` directory.
 
-You also need to add appropriate SMBIOS settings to `EFI/CLOVER/config.plist`, probably using a tool like Clover Configurator. This guide does not cover the subject, but a good choice for `ProductName` is `MacBookAir7,2`.
+To improve performance and to (potentially) enable Apple services, you need SMBIOS information configured. You can add appropriate SMBIOS settings to `EFI/CLOVER/config.plist`, probably using a tool like Clover Configurator. This guide does not cover the subject, but a good choice for `ProductName` is `MacBookAir7,2`.
 
 You're done!
 
@@ -93,15 +177,15 @@ Most drivers are downloaded as part of `download.sh`. Here are the sources for t
 * AsusNBFKeys v2.4: http://forum.osxlatitude.com/index.php?/topic/1968-fn-hotkey-and-als-a-driver-for-asus-notebooks/
 * AX88772: http://www.asix.com.tw/download.php?sub=driverdetail&PItemID=86
 
-## Notes to self
+## Random notes
 
-The command to enable HiDPI mode is
+The command to force-enable HiDPI mode is
 
 ```
 sudo defaults write /Library/Preferences/com.apple.windowserver.plist DisplayResolutionEnabled -bool true
 ```
 
-In order to use HiDPI mode at resolutions above 960x540, you need [SwitchResX] (http://www.madrau.com/srx_download/download.html). Select your monitor, switch to the "Custom Resolutions" tab, then use "+" to add "Scaled" resolutions at twice the size you really want. "3200x1800" gives a virtual 1600x900 display.
+On the 1920x1080 display: in order to use HiDPI mode at resolutions above 960x540, you need [SwitchResX] (http://www.madrau.com/srx_download/download.html). Select your monitor, switch to the "Custom Resolutions" tab, then use "+" to add "Scaled" resolutions at twice the size you really want. "3200x1800" gives a virtual 1600x900 display.
 
 ## Credits
 
