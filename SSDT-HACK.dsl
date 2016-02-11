@@ -49,16 +49,20 @@ DefinitionBlock ("SSDT-HACK.aml", "SSDT", 1, "hack", "hack", 0x00003000)
 		// USB calls this as GPRW(0x6d, 0x03).
 		// GLAN and HDEF call this as GPRW(0x6d, 04)
 		// We only care about USB, I think.
+		//
+		// No, I was wrong. GLAN causes instant wake too when AC-powered.
+		// Fix all 0x6d.
 		If (LEqual(Arg0, 0x6d))
 		{
-			If (LEqual(Arg1, 0x03))
-			{
+			//If (LEqual(Arg1, 0x03))
+			//{
 				// It doesn't look like there are
 				// side-effects, but call anyway.
 				XPRW(Arg0, Arg1)
 				// Avoid instant wake from USB.
+				// and GLAN
 				Return (Package (0x02) { 0x6D, 0x00 })
-			}
+			//}
 		}
 		Return (XPRW(Arg0, Arg1))
 	}
