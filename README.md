@@ -20,7 +20,7 @@ It requires Clover r3328 or later.
 
 #### Optional, drivers included:
 
-* Sound, using VoodooHDA
+* Sound, using VoodooHDA or patched AppleHDA
 * The Ethernet dongle included with the UX305FA
 
 #### Will never work
@@ -159,7 +159,27 @@ The kexts will be installed into `/Library/Extensions`.
 
 In this `UX305FA-DSDT-Patch` directory is `AX88772-USB-Ethernet.dmg`, which is a driver for the USB Ethernet dongle which comes with the UX305FA. Note that it appears to replace the Apple USB Ethernet driver. It does come with an uninstall/restore script.
 
-Sound won't work without a driver. I currently use VoodooHDA  for sound. It is available in `downloads/pkgs/`. If you want to try patching `AppleHDA`, the `SSDT-HACK.aml` already includes layout-3 properties. It is untested.
+Sound won't work without a driver. There are three choices for that:
+
+#### VoodooHDA
+
+The VoodooHDA installer is available in `downloads/pkgs/`.
+
+The directory `voodohda-fix` contains a patch for headphone detaction. See `voodoohda-fix/readme.txt`.
+
+Mic switching is unsupported.
+
+#### Patched AppleHDA
+
+Thanks to anerik70, there is a patched AppleHDA. It also supports HDMI audio (with the current `config.plist`). I have not tested it as much.
+
+The dummy kext is in `ADummy.kext.zip`.  You can install it  with `sudo unzip -X ADummy.kext.zip -d /Library/Extensions`. If you installed VoodooHDA previously, remember to remove `/System/Library/Extensions/AppleHDADisabler.kext`. 
+
+Like this VoodooHDA, this particular AppleHDA does not support mic switching. If you feel like messing with it, https://github.com/Mirone/AppleHDAPatcher/tree/master/Patches/Laptop/CX20752 may have useful files.
+
+#### Hybrid VoodooHDA/AppleHDA
+
+McShmoopy has built a hybrid VoodooHDA/AppleHDA configuration, which handles both internal and HDMI audio. See http://www.tonymacx86.com/el-capitan-laptop-support/185868-voodoohda-jack-sense-auto-switching-hdmi-audio.html for details.
 
 ### Once you have a network
 

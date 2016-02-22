@@ -5,6 +5,8 @@ DefinitionBlock ("SSDT-HACK.aml", "SSDT", 1, "hack", "hack", 0x00003000)
 	External(\_SB.PCI0.EHC2, DeviceObj)
 	External(\_SB.PCI0.XHC, DeviceObj)
 	External(\_SB.PCI0.HDEF, DeviceObj)
+	External(\_SB.PCI0.HDAU, DeviceObj)
+	External(\_SB.PCI0.IGPU, DeviceObj)
 	External(ATKP, IntObj)
 	External(\_SB.ATKD, DeviceObj)
 	External(\_SB.ATKD.IANE, MethodObj)
@@ -67,7 +69,7 @@ DefinitionBlock ("SSDT-HACK.aml", "SSDT", 1, "hack", "hack", 0x00003000)
 		Return (XPRW(Arg0, Arg1))
 	}
 
-	Scope(_SB.PCI0.EHC1) {
+/*	Scope(_SB.PCI0.EHC1) {
 	    Method (_DSM, 4, NotSerialized)
             {
                 If (LEqual (Arg2, Zero)) { Return (Buffer() { 0x03 } ) }
@@ -98,7 +100,7 @@ DefinitionBlock ("SSDT-HACK.aml", "SSDT", 1, "hack", "hack", 0x00003000)
                     "AAPL,max-port-current-in-sleep", 2100,
                 })
             }
-	}
+	} */
 	Scope(_SB.PCI0.XHC) {
 	    Method (_DSM, 4, NotSerialized)
             {
@@ -116,16 +118,38 @@ DefinitionBlock ("SSDT-HACK.aml", "SSDT", 1, "hack", "hack", 0x00003000)
             }
 	}
 	Scope(_SB.PCI0.HDEF) {
-	            Method (_DSM, 4, NotSerialized)
+	    Method (_DSM, 4, NotSerialized)
+        {
+            If (LEqual (Arg2, Zero)) { Return (Buffer() { 0x03 } ) }
+            Return (Package()
             {
-                If (LEqual (Arg2, Zero)) { Return (Buffer() { 0x03 } ) }
-                Return (Package()
-                {
-                    "layout-id", Buffer() { 3, 0x00, 0x00, 0x00 },
-                    "hda-gfx", Buffer() { "onboard-1" },
-                    "PinConfigurations", Buffer() { },
-                    //"MaximumBootBeepVolume", 77,
-                })
-            }
+                "layout-id", Buffer() { 3, 0x00, 0x00, 0x00 },
+                "hda-gfx", Buffer() { "onboard-1" },
+                "PinConfigurations", Buffer() { },
+                //"MaximumBootBeepVolume", 77,
+            })
+        }
 	}
+    Scope(_SB.PCI0.IGPU) {
+        Method (_DSM, 4, NotSerialized)
+        {
+            If (LEqual (Arg2, Zero)) { Return (Buffer() { 0x03 } ) }
+            Return(Package()
+            {
+                "hda-gfx", Buffer() { "onboard-1" },
+            })
+        }
+    }
+    Scope(_SB.PCI0.HDAU) {
+        Method (_DSM, 4, NotSerialized)
+        {
+            If (LEqual (Arg2, Zero)) { Return (Buffer() { 0x03 } ) }
+            Return(Package()
+            {
+                "hda-gfx", Buffer() { "onboard-1" },
+            })
+        }
+
+    }
+
 }

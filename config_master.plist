@@ -510,7 +510,7 @@
 				<key>Comment</key>
 				<string>HDMI-audio, port 0204, 0x16120003 0x16120005 0x16120006</string>
 				<key>Disabled</key>
-				<true/>
+				<false/>
 				<key>Name</key>
 				<string>AppleIntelBDWGraphicsFramebuffer</string>
 				<key>Find</key>
@@ -529,6 +529,18 @@
 				<data>AwYIAAAEAAARAAAA</data>
 				<key>Replace</key>
 				<data>AwYIAAAIAACCAAAA</data>
+			</dict>
+			<dict>
+				<key>Comment</key>
+				<string>Audio codec CX20752</string>
+				<key>Expect</key>
+				<integer>2</integer>
+				<key>Find</key>
+				<data>hBnUEQ==</data>
+				<key>Name</key>
+				<string>AppleHDA</string>
+				<key>Replace</key>
+				<data>D1HxFA==</data>
 			</dict>
 		</array>
 	</dict>
