@@ -29,6 +29,8 @@ It requires Clover r3328 or later.
 
 ## About hotpatches
 
+If you're not interested in the details of DSDT patching, skip ahead to the "Intro" section.
+
 If you've used other guides, you're probably familiar with the process of `DSDT.dsl` patching, using a tool like MaciASL.. This guide doesn't do that.  Instead, it uses a different approach for ACPI patches: RehabMan's "hotpatch" style. The special `clover.plist` works together with small SSDT files to accomplish the same purpose as text-based DSDT/SSDT patching.
 
 This set of hotpatches should work across BIOS revisions of the UX305FA. (It looks like it may work on the Broadwell-based 303LA and LB as well.)
@@ -37,7 +39,7 @@ This set of hotpatches should work across BIOS revisions of the UX305FA. (It loo
 
 Clover supports binary "search&amp;replace" patch operations on DSDT/SSDT tables. Even simple binary patching can be very powerful.
 
-* Some text DSDT patches like "rename GFX0 to IGPU") can be replaced with a single binary patch
+* Some text DSDT patches like "rename GFX0 to IGPU" can be replaced with a single binary patch
 * Methods effectively can be deleted by renaming them to an unused name. For example the existing `_DSM` methods are renamed to `XDSM`, which nothing calls.
 * Existing methods like `GPRW` can be replaced. First, the original method definition is renamed to an unused name like `XPRW`. Then, a separate small SSDT provides a replacement "GPRW" method.
 
