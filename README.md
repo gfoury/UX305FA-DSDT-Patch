@@ -27,6 +27,37 @@ It requires Clover r3328 or later.
 
 * Factory Intel WiFi card.
 
+## About hotpatches
+
+If you've used other guides, you're probably familiar with the process of `DSDT.dsl` patching, using a tool like MaciASL.. This guide doesn't do that.  Instead, it uses a different approach for ACPI patches: RehabMan's "hotpatch" style. The special `clover.plist` works together with small SSDT files to accomplish the same purpose as text-based DSDT/SSDT patching.
+
+This set of hotpatches should work across BIOS revisions of the UX305FA. (It looks like it may work on the Broadwell-based 303LA and LB as well.)
+
+### How hotpatching works
+
+Clover supports binary "search&amp;replace" patch operations on DSDT/SSDT tables. Even simple binary patching can be very powerful.
+
+* Some text DSDT patches like "rename GFX0 to IGPU") can be replaced with a single binary patch
+* Methods effectively can be deleted by renaming them to an unused name. For example the existing `_DSM` methods are renamed to `XDSM`, which nothing calls.
+* Existing methods like `GPRW` can be replaced. First, the original method definition is renamed to an unused name like `XPRW`. Then, a separate small SSDT provides a replacement "GPRW" method.
+
+### The only AML files you want
+
+Later in this guide you will install SSDT files. The only files you should expect to see in `EFI/CLOVER/ACPI/patched` are these:
+
+|File|Description|
+|----|----|
+|[`SSDT-HACK.aml`](https://github.com/gfoury/UX305FA-DSDT-Patch/blob/master/SSDT-HACK.dsl)|Brightness keys, USB, graphics properties, HDMI sound|
+|[`SSDT-BATT.aml`](https://github.com/gfoury/UX305FA-DSDT-Patch/blob/master/SSDT-BATT.dsl)|Battery monitorying|
+|[`SSDT-DEBUG.aml`](https://github.com/gfoury/UX305FA-DSDT-Patch/blob/master/SSDT-DEBUG.dsl)|ACPI logging|
+|[`SSDT-ALS.aml`](https://github.com/gfoury/UX305FA-DSDT-Patch/blob/master/SSDT-ALS.dsl)|Ambient light sensor. Optional.|
+|[`SSDT-RMNE.am`](https://github.com/gfoury/UX305FA-DSDT-Patch/blob/master/SSDT-RMNE.dsl)|MAC address for NullEthernet. Optional.|
+|`SSDT.aml`|CPU power management. You will create this after installation with [`ssdtPRGen.sh`](https://github.com/Piker-Alpha/ssdtPRGen.sh/tree/Beta).|
+
+Do not include `DSDT.aml` or any of the numeric `SSDT-1.aml` files. They will cause trouble.
+
+## Intro
+
 These instructions are broken into two sections. The first, "Building", needs to be done on a working Mac. The second, "Target", is run on the UX305FA.
 
 ## Building
@@ -69,6 +100,8 @@ If you want to mount the USB EFI partition at another time:
 On the USB EFI partition, the only directory in `EFI/CLOVER/kexts` should be `Other`. `EFI/CLOVER/kexts/Other` should only contain `FakeSMC.kext` (from `downloads/kexts/RehabMan-FakeSMC-2015-1230.zip`) and `ApplePS2SmartTouchPad.kext` (from `SmartTouchPad_v4.4_Final_64bit.zip`).
 
 RehabMan's config file [`config_HD5300_5500_5600_6000.plist`] (https://github.com/RehabMan/OS-X-Clover-Laptop-Config/raw/master/config_HD5300_5500_5600_6000.plist) is a good choice for `config.plist`. Change `Graphics/Inject/Intel` to `false` for initial installation.
+
+There should not be any files in `EFI/CLOVER/ACPI/patched` yet.
 
 ### Copying files to USB
 
@@ -115,6 +148,8 @@ Because there will be an EFI partition on both your installation media and the h
 After installing Clover, remember to install `HFSPlus.efi`, `FakeSMC.kext`, and `ApplePS2SmartTouchPad.kext` to the hard drive's EFI partition as you did with the USB install media.
 
 ### Installing the patches
+
+This is where you install the hotpatches.
 
 From the `UX305FA-DSDT-Patch` directory, copy `build/*.aml` to the EFI partition's `EFI/CLOVER/ACPI/patched` directory.
 
