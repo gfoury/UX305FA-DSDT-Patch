@@ -40,7 +40,7 @@
 			<key>Fixes</key>
 			<dict>
 				<key>FixRegions_10000000</key>
-				<true/>
+				<false/>
 				<key>NewWay_80000000</key>
 				<true/>
 				<key>FixHPET_0010</key>
